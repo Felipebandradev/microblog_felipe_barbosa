@@ -1,12 +1,14 @@
 <?php 
 require_once "../inc/cabecalho-admin.php";
 use Microblog\Usuario;
+use Microblog\Utilitarios;
 
 $usuarios = new Usuario;
 
 $listar = $usuarios->listar();
 
 $qtddeUsuarios = count($listar) ;
+
 
 ?>
 
