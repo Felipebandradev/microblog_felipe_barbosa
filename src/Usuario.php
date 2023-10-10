@@ -3,7 +3,7 @@
 namespace Microblog;
 use PDO, Exception;
 
-class usuario {
+class Usuario {
     private int $id;
     private string $nome;
     private string $email;
@@ -36,6 +36,55 @@ class usuario {
         }
     }
 
+    public function listar():array{
+        $sql = "SELECT * FROM usuarios ORDER BY nome";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->execute();
+            $resultado = $consulta->fetchALL(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao listar usuario".$erro->getMessage());
+        }
+
+        return $resultado;
+        
+    }
+
+    public function listarUm ():array{
+        $sql = "SELECT * FROM usuarios WHERE id = :id";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $consulta->execute();
+            $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao carregar usuario: ".$erro->getMessage());
+        }    
+        return $resultado;
+    }
+
+    public function atualizar():void { 
+        $sql = "UPDATE usuarios SET 
+                    nome = :nome,
+                    email = :email,
+                    senha = :senha,
+                    tipo = :tipo
+                WHERE id = :id" ;
+        
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $consulta->bindValue(":nome", $this->nome,PDO::PARAM_STR);
+            $consulta->bindValue(":email", $this->email,PDO::PARAM_STR);
+            $consulta->bindValue(":senha", $this->senha,PDO::PARAM_STR);
+            $consulta->bindValue(":tipo", $this->tipo,PDO::PARAM_STR);
+            $consulta->execute();            
+        } catch (Exception $erro) {
+            die("Erro ao usuario".$erro->getMessage());
+        }
+    }
 
 
 
@@ -50,6 +99,10 @@ class usuario {
 
 
 
+    /* Método para codificar senha */
+    public function codificaSenha(string $senha):string {
+        return password_hash($senha, PASSWORD_DEFAULT);
+    }
 
 
 
@@ -64,7 +117,7 @@ class usuario {
 
     public function setId(int $id): self
     {
-        $this->id = $id;
+        $this->id =  filter_var( $id, FILTER_SANITIZE_NUMBER_INT);
 
         return $this;
     }
@@ -77,7 +130,7 @@ class usuario {
 
     public function setNome(string $nome): self
     {
-        $this->nome = $nome;
+        $this->nome = filter_var( $nome, FILTER_SANITIZE_SPECIAL_CHARS);
 
         return $this;
     }
@@ -90,7 +143,7 @@ class usuario {
 
     public function setEmail(string $email): self
     {
-        $this->email = $email;
+        $this->email = filter_var( $email, FILTER_SANITIZE_EMAIL, FILTER_SANITIZE_SPECIAL_CHARS);
 
         return $this;
     }
@@ -103,7 +156,7 @@ class usuario {
 
     public function setSenha(string $senha): self
     {
-        $this->senha = $senha;
+        $this->senha = filter_var($senha,FILTER_SANITIZE_SPECIAL_CHARS);
 
         return $this;
     }
@@ -116,7 +169,7 @@ class usuario {
 
     public function setTipo(string $tipo): self
     {
-        $this->tipo = $tipo;
+        $this->tipo = filter_var($tipo, FILTER_SANITIZE_SPECIAL_CHARS);
 
         return $this;
     }
