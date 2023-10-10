@@ -22,7 +22,7 @@ class usuario {
 
     public function inserir ():void{
         $sql = "INSERT INTO usuarios(nome, email, senha, tipo)
-                          VALUES(:nome, :email,:senha, :tipo)";
+                         VALUES(:nome, :email,:senha, :tipo)";
         
         try {
             $consulta = $this->conexao->prepare($sql);
