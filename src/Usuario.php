@@ -85,8 +85,21 @@ class Usuario {
             $consulta->bindValue(":tipo", $this->tipo,PDO::PARAM_STR);
             $consulta->execute();            
         } catch (Exception $erro) {
-            die("Erro ao usuario".$erro->getMessage());
+            die("Erro ao atualizar usuario".$erro->getMessage());
         }
+    }
+
+    public function excluir():void{
+        $sql = "DELETE FROM usuarios WHERE id = :id";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $consulta->execute();            
+        } catch (Exception $erro) {
+            die("Erro ao deletar usuario".$erro->getMessage());
+        }
+
     }
 
 
@@ -105,6 +118,16 @@ class Usuario {
     /* Método para codificar senha */
     public function codificaSenha(string $senha):string {
         return password_hash($senha, PASSWORD_DEFAULT);
+    }
+
+    public function verificaSenha(string $senhaFormulario, string $senhaBanco): string {
+
+       if( password_verify($senhaFormulario, $senhaBanco)){
+            return $senhaBanco;
+       } else {
+            return $this->codificaSenha($senhaFormulario);
+       }
+
     }
 
 

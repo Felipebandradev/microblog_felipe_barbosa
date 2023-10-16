@@ -1,7 +1,6 @@
 <?php 
 require_once "../inc/cabecalho-admin.php";
 use Microblog\Usuario;
-use Microblog\Utilitarios;
 
 
 
@@ -12,6 +11,29 @@ $usuario->setId($_GET['id']);
 $dados = $usuario->listarUm();
 
 
+if (isset($_POST['atualizar'])){
+	$usuario->setNome($_POST['nome']);
+	$usuario->setEmail($_POST['email']);
+	$usuario->setTipo($_POST['tipo']);
+
+	/* Algoritmo geral para tratamento da senha */
+
+	/* Se o campo senha no formúlario estiver vazio significa que o usuário não mudou a senha */
+
+	if( empty($_POST['senha'])){
+		$usuario->setSenha($dados['senha']);
+	} else {
+
+	/* Caso o contrário se o usuário digitou alguma coisa no campo preciaremos verificar o que foi digitado  */
+
+		$usuario->setSenha($usuario->verificaSenha($_POST['senha'], $dados['senha']));
+
+	}
+
+	$usuario->atualizar();
+
+	header("location:usuarios.php");
+}
 
 
 ?>
