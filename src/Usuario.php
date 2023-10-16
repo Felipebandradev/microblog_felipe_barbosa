@@ -20,6 +20,7 @@ class Usuario {
 
     /* Métodos para rotinas de CRUD no Bando */
 
+    // INSERT de usuario
     public function inserir ():void{
         $sql = "INSERT INTO usuarios(nome, email, senha, tipo)
                          VALUES(:nome, :email,:senha, :tipo)";
@@ -36,6 +37,7 @@ class Usuario {
         }
     }
 
+    // SELECT de usuarios
     public function listar():array{
         $sql = "SELECT * FROM usuarios ORDER BY nome";
 
@@ -51,6 +53,7 @@ class Usuario {
         
     }
 
+    // SELECT de usuario
     public function listarUm ():array{
         $sql = "SELECT * FROM usuarios WHERE id = :id";
 
@@ -60,7 +63,7 @@ class Usuario {
             $consulta->execute();
             $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $erro) {
-            die("Erro ao carregar usuario: ".$erro->getMessage());
+            die("Erro ao carregar doados do usuário: ".$erro->getMessage());
         }    
         return $resultado;
     }
