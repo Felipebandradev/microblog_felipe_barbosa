@@ -12,6 +12,10 @@ if (isset($_GET['campos_obrigatorios'])) {
 	$feedback = "Você deve preencecher os campos primeiro!";
 } elseif (isset($_GET['dados_incorretos'])) {
 	$feedback = "Dados Incorretos Tente novamente";
+} elseif(isset($_GET['logout'])){
+	$feedback = " Você saiu do sistema";
+} elseif(isset($_GET['acesso_proibido'])){
+	$feedback = "Acesso Negado, Você deve logar primeiro";
 }
 
 
@@ -25,7 +29,7 @@ if (isset($_GET['campos_obrigatorios'])) {
 		<form action="" method="post" id="form-login" name="form-login" class="mx-auto w-50">
 
 			<?php if (isset($feedback)) { ?>
-				<p class="my-2 alert alert-warning text-center"><?= $feedback ?></p>
+				<p class="my-2 alert alert-danger text-center"><?= $feedback ?></p>
 			<?php } ?>
 			<div class="mb-3">
 				<label for="email" class="form-label">E-mail:</label>
