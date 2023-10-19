@@ -5,7 +5,7 @@ use Microblog\Usuario;
 use Microblog\Utilitarios;
 
 $usuarios = new Usuario;
-
+$sessao->verificarAcessoAdmin();
 $listar = $usuarios->listar();
 
 $qtddeUsuarios = count($listar);

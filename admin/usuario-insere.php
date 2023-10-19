@@ -1,7 +1,7 @@
 <?php 
 require_once "../inc/cabecalho-admin.php";
 use Microblog\Usuario;
-
+$sessao->verificarAcessoAdmin();
 
 
 if (isset($_POST['inserir'])){
