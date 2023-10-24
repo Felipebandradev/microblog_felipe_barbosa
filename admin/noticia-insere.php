@@ -4,11 +4,27 @@ require_once "../inc/cabecalho-admin.php";
 use Microblog\Noticia;
 use Microblog\Utilitarios;
 
-$noticias = new Noticia;
+$noticia = new Noticia;
 
-$listaDeCategoria = $noticias->categoria->listar();
+$listaDeCategoria = $noticia->categoria->listar();
+
+if(isset($_POST["inserir"])){
+	$noticia->setTitulo($_POST['titulo']);
+	$noticia->setTexto($_POST['texto']);
+	$noticia->setResumo($_POST['resumo']);
+	$noticia->setDestaque($_POST['destaque']);
+
+	// ID usuario que está inserindo
+	$noticia->usuario->setId($_SESSION['id']);
+
+	// ID categoria escolhida pora a noticia
+	$noticia->categoria->setId($_POST['categoria']);
 
 
+	/* Sobre a imagem
+	- capturar o arquivo de imagem e enviar para o servidor 
+	- Capturar o nome/extensão e enviar para o banco de dados */
+}
 
 ?>
 
@@ -20,7 +36,8 @@ $listaDeCategoria = $noticias->categoria->listar();
 			Inserir nova notícia
 		</h2>
 
-		<form class="mx-auto w-75" action="" method="post" id="form-inserir" name="form-inserir">
+		<!-- Para formularios aceite arquivos (upload), é necessario habilitar o atributo enctype -->
+		<form class="mx-auto w-75" action="" method="post" id="form-inserir" name="form-inserir" enctype="multipart/form-data">
 
 			<div class="mb-3">
 				<label class="form-label" for="categoria">Categoria:</label>
@@ -50,6 +67,7 @@ $listaDeCategoria = $noticias->categoria->listar();
 
 			<div class="mb-3">
 				<label class="form-label" for="imagem" class="form-label">Selecione uma imagem:</label>
+																								<!-- Mime Type -->
 				<input required class="form-control" type="file" id="imagem" name="imagem" accept="image/png, image/jpeg, image/gif, image/svg+xml">
 			</div>
 
