@@ -67,6 +67,46 @@ final class Noticia
 
 
 
+    /* Método upload de Foto */
+
+    public function upload(array $arquivo):void{
+        //Definir os tipos validos
+        $tiposValidos = [
+            "image/png", 
+            "image/jpeg", 
+            "image/gif", 
+            "image/svg+xml"
+        ];
+
+        // varificando se o arquivo não é um dos tipos válidos
+        if ( !in_array($arquivo["type"], $tiposValidos)){
+            // alertamos o usuário e o fazemos voltar para o form.
+            die("
+            <script>
+                alert('Formato Inválido!');
+                history.back();
+            </script>
+            ");
+        }
+
+        // Acessand APENAS o nome/extensão do arquivo
+        $nome = $arquivo["name"];
+        
+        // Acessando os Dados de Acesso/armazenamento temporários
+        $temporario = $arquivo["tmp_name"];
+
+        // Definindo o local/pasta de destino das imgaens no site
+        $pastaFinal = "../imagens/".$nome;
+
+
+        move_uploaded_file($temporario, $pastaFinal);
+
+
+
+    }
+
+
+
 
 
 
