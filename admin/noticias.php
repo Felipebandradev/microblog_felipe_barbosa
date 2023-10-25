@@ -1,5 +1,12 @@
 <?php 
 require_once "../inc/cabecalho-admin.php";
+
+use Microblog\Noticia;
+
+$noticia = new Noticia;
+$noticia->usuario->setId($_SESSION['id']);
+$noticia->usuario->setTipo($_SESSION['tipo']);
+
 ?>
 
 
@@ -24,6 +31,7 @@ require_once "../inc/cabecalho-admin.php";
                         <th>Título</th>
                         <th>Data</th>
                         <th>Autor</th>
+						<th>Destaque</th>
 						<th class="text-center">Operações</th>
 					</tr>
 				</thead>
@@ -34,6 +42,7 @@ require_once "../inc/cabecalho-admin.php";
                         <td> Título da notícia... </td>
                         <td> 21/12/2112 21:12 </td>
                         <td> Autor da notícia... </td>
+						<td>sim</td>
 						<td class="text-center">
 							<a class="btn btn-warning" 
 							href="noticia-atualiza.php">

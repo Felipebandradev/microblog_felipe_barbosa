@@ -66,20 +66,57 @@ final class Noticia
     }
 
 
+    public function listar(): array
+    {
+        if ($this->usuario->getTipo() === "admin"){
+
+        // sql ADMIN pode ver todo mundo
+        $sql = "SELECT noticias.id, 
+                       noticias.titulo, 
+                       noticias.data,
+                       usuarios.nome AS autor,
+                       noticias.destaque
+                FROM noticias INNER JOIN usuarios
+                ON noticias.usuario_id = usuarios.id
+                ORDER BY data DESC";
+                
+        } else {
+
+        // sql EDITOR pode ver só as noticias dele
+        $sql = "SELECT id, titulo, data, destaque FROM noticias WHERE usuario_id = :usuario_id ORDER BY data DESC";
+
+        }
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            
+            if ($this->usuario->getTipo() === "editor") {
+                $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
+            }
+            $consulta->execute();
+            $resultado = $consulta->fetchALL(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao listar noticia" . $erro->getMessage());
+        }
+
+        return $resultado;
+    }
+
+
 
     /* Método upload de Foto */
 
-    public function upload(array $arquivo):void{
+    public function upload(array $arquivo): void
+    {
         //Definir os tipos validos
         $tiposValidos = [
-            "image/png", 
-            "image/jpeg", 
-            "image/gif", 
+            "image/png",
+            "image/jpeg",
+            "image/gif",
             "image/svg+xml"
         ];
 
         // varificando se o arquivo não é um dos tipos válidos
-        if ( !in_array($arquivo["type"], $tiposValidos)){
+        if (!in_array($arquivo["type"], $tiposValidos)) {
             // alertamos o usuário e o fazemos voltar para o form.
             die("
             <script>
@@ -91,18 +128,15 @@ final class Noticia
 
         // Acessand APENAS o nome/extensão do arquivo
         $nome = $arquivo["name"];
-        
+
         // Acessando os Dados de Acesso/armazenamento temporários
         $temporario = $arquivo["tmp_name"];
 
         // Definindo o local/pasta de destino das imgaens no site
-        $pastaFinal = "../imagens/".$nome;
+        $pastaFinal = "../imagens/" . $nome;
 
 
         move_uploaded_file($temporario, $pastaFinal);
-
-
-
     }
 
 
