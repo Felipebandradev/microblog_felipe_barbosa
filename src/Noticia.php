@@ -88,7 +88,7 @@ final class Noticia
         }
         try {
             $consulta = $this->conexao->prepare($sql);
-            
+
             if ($this->usuario->getTipo() === "editor") {
                 $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
             }
@@ -99,6 +99,31 @@ final class Noticia
         }
 
         return $resultado;
+    }
+
+    public function listarUm():array{
+        if($this->usuario->getTipo() === 'admin'){
+            $sql  = "SELECT * FROM noticias WHERE id = :id";
+        } else{
+            $sql = "SELECT * FROM noticias 
+                    WHERE id = :id AND usuario_id = :usuario_id";
+        }
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->getId(),PDO::PARAM_INT);
+            if ($this->usuario->getTipo() === "editor") {
+                $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
+            }
+            $consulta->execute();
+            $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao listar noticia" . $erro->getMessage());
+        }
+
+        return $resultado;
+
+
     }
 
 

@@ -11,7 +11,6 @@ $noticia->usuario->setId($_SESSION['id']);
 $noticia->usuario->setTipo($_SESSION['tipo']);
 
 $listaDeNoticias = $noticia->listar();
-Utilitarios::dump($listaDeNoticias);
 $qtdDeNoticias = count($listaDeNoticias);
 ?>
 
@@ -40,7 +39,7 @@ $qtdDeNoticias = count($listaDeNoticias);
 							<th>Autor</th>
 						<?php } ?>
 						<th>Destaque</th>
-						<th class="text-center">Operações</th>
+						<th class="text-center" colspan="2">Operações</th>
 					</tr>
 				</thead>
 
