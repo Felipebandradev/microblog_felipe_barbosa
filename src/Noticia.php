@@ -219,7 +219,7 @@ final class Noticia
 
     /* Métodos Área Pública */
     // index.php
-    public function listarDestaque():array
+    public function listarDestaque(): array
     {
         $sql = "SELECT id, titulo, resumo, imagem FROM noticias WHERE destaque = :destaque ORDER BY data DESC";
 
@@ -234,7 +234,7 @@ final class Noticia
 
         return $resultado;
     }
-    public function listarTodas():array
+    public function listarTodas(): array
     {
         $sql = "SELECT id, titulo, data, resumo FROM noticias  ORDER BY data DESC";
 
