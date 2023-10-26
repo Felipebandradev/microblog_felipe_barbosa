@@ -18,14 +18,18 @@ if (isset($_POST['atualizar'])){
 	$noticia->setTexto($_POST['texto']);
 	$noticia->setResumo($_POST['resumo']);
 	$noticia->setDestaque($_POST['destaque']);
-
-
 	$noticia->categoria->setId($_POST['categoria']);
 
-	$imagem = $_FILES['imagem']; 
-	$noticia->upload($imagem);
-	$noticia->setImagem($imagem["name"]);
     
+    if (empty($_FILES['imagem']['name'])){
+        $noticia->setImagem($_POST["imagem-existente"]);
+    } else {
+        $noticia->upload($_FILES["imagem"]);
+        $noticia->setImagem($_FILES["imagem"]["name"]);
+    }
+
+    $noticia->atualizar();
+    header("location:noticias.php");
 
 }
 

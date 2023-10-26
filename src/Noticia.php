@@ -68,10 +68,10 @@ final class Noticia
 
     public function listar(): array
     {
-        if ($this->usuario->getTipo() === "admin"){
+        if ($this->usuario->getTipo() === "admin") {
 
-        // sql ADMIN pode ver todo mundo
-        $sql = "SELECT noticias.id, 
+            // sql ADMIN pode ver todo mundo
+            $sql = "SELECT noticias.id, 
                        noticias.titulo, 
                        noticias.data,
                        usuarios.nome AS autor,
@@ -79,12 +79,10 @@ final class Noticia
                 FROM noticias INNER JOIN usuarios
                 ON noticias.usuario_id = usuarios.id
                 ORDER BY data DESC";
-                
         } else {
 
-        // sql EDITOR pode ver só as noticias dele
-        $sql = "SELECT id, titulo, data, destaque FROM noticias WHERE usuario_id = :usuario_id ORDER BY data DESC";
-
+            // sql EDITOR pode ver só as noticias dele
+            $sql = "SELECT id, titulo, data, destaque FROM noticias WHERE usuario_id = :usuario_id ORDER BY data DESC";
         }
         try {
             $consulta = $this->conexao->prepare($sql);
@@ -101,17 +99,18 @@ final class Noticia
         return $resultado;
     }
 
-    public function listarUm():array{
-        if($this->usuario->getTipo() === 'admin'){
+    public function listarUm(): array
+    {
+        if ($this->usuario->getTipo() === 'admin') {
             $sql  = "SELECT * FROM noticias WHERE id = :id";
-        } else{
+        } else {
             $sql = "SELECT * FROM noticias 
                     WHERE id = :id AND usuario_id = :usuario_id";
         }
 
         try {
             $consulta = $this->conexao->prepare($sql);
-            $consulta->bindValue(":id", $this->getId(),PDO::PARAM_INT);
+            $consulta->bindValue(":id", $this->getId(), PDO::PARAM_INT);
             if ($this->usuario->getTipo() === "editor") {
                 $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
             }
@@ -122,8 +121,61 @@ final class Noticia
         }
 
         return $resultado;
+    }
 
+    public function atualizar(): void
+    {
+        if ($this->usuario->getTipo() === 'admin') {
+            $sql  = "UPDATE  noticias SET 
+                        titulo = :titulo, texto = :texto, resumo = :resumo,
+                        imagem = :imagem, categoria_id = :categoria_id, destaque = :destaque 
+                    WHERE id = :id";
+        } else {
+            $sql = "UPDATE  noticias SET 
+                        titulo = :titulo, texto = :texto, resumo = :resumo,
+                        imagem = :imagem, categoria_id = :categoria_id, destaque = :destaque 
+                    WHERE id = :id AND usuario_id = :usuario_id";
+        }
 
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->getId(), PDO::PARAM_INT);
+            $consulta->bindValue(":titulo", $this->titulo, PDO::PARAM_STR);
+            $consulta->bindValue(":texto", $this->texto, PDO::PARAM_STR);
+            $consulta->bindValue(":resumo", $this->resumo, PDO::PARAM_STR);
+            $consulta->bindValue(":imagem", $this->imagem, PDO::PARAM_STR);
+            $consulta->bindValue(":destaque", $this->destaque, PDO::PARAM_STR);
+            if ($this->usuario->getTipo() === "editor") {
+                $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
+            }
+            $consulta->bindValue(":categoria_id", $this->categoria->getId(), PDO::PARAM_INT);
+
+            $consulta->execute();
+        } catch (Exception $erro) {
+            die("Erro ao atualizar noticia" . $erro->getMessage());
+        }
+    }
+
+    public function excluir(): void
+    {
+        if ($this->usuario->getTipo() === 'admin') {
+            $sql  = "DELETE FROM noticias
+                    WHERE id = :id";
+        } else {
+            $sql = "DELETE FROM noticias
+                    WHERE id = :id AND usuario_id = :usuario_id";
+        }
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->getId(), PDO::PARAM_INT);
+            if ($this->usuario->getTipo() !== "admin") {
+                $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
+            }
+            $consulta->execute();
+        } catch (Exception $erro) {
+            die("Erro ao excluir noticia" . $erro->getMessage());
+        }
     }
 
 
