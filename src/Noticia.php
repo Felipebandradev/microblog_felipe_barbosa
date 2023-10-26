@@ -217,6 +217,25 @@ final class Noticia
     }
 
 
+    /* Métodos Área Pública */
+    // index.php
+    public function listarDestaque():array
+    {
+        $sql = "SELECT id, titulo, resumo, imagem FROM noticias WHERE destaque = :destaque ORDER BY data DESC";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":destaque", $this->destaque, PDO::PARAM_STR);
+            $consulta->execute();
+            $resultado = $consulta->fetchALL(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao listar noticia" . $erro->getMessage());
+        }
+
+        return $resultado;
+    }
+
+
 
 
 
