@@ -234,6 +234,8 @@ final class Noticia
 
         return $resultado;
     }
+
+    // todas.php
     public function listarTodas(): array
     {
         $sql = "SELECT id, titulo, data, resumo FROM noticias  ORDER BY data DESC";
@@ -244,6 +246,29 @@ final class Noticia
             $resultado = $consulta->fetchALL(PDO::FETCH_ASSOC);
         } catch (Exception $erro) {
             die("Erro ao listar noticia" . $erro->getMessage());
+        }
+
+        return $resultado;
+    }
+
+
+    // noticia.php
+
+    public function listarDetalhes() : array{
+        $sql = "SELECT 
+                     noticias.titulo, noticias.texto, noticias.id,
+                     noticias.data, noticias.imagem,usuarios.nome AS autor
+                FROM noticias INNER JOIN usuarios
+                ON noticias.usuario_id = usuarios.id
+                WHERE noticias.id = :id";
+        
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->getId(), PDO::PARAM_INT);
+            $consulta->execute();
+            $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao carregar dados da noticia" . $erro->getMessage());
         }
 
         return $resultado;
