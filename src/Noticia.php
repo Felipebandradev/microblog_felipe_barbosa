@@ -275,7 +275,7 @@ final class Noticia
         return $resultado;
     }
 
-    // noticias por categoria
+    // noticias-por-categoria.php
     public function listarPorCategoria(): array
     {
         $sql = "SELECT 
@@ -291,6 +291,27 @@ final class Noticia
         try {
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":categoria_id", $this->categoria->getId(), PDO::PARAM_INT);
+            $consulta->execute();
+            $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao carregar dados da noticia" . $erro->getMessage());
+        }
+
+        return $resultado;
+    }
+
+    public function busca():array{
+
+        $sql = "SELECT id, titulo, data, resumo FROM noticias
+                WHERE
+                    titulo LIKE :termo
+                OR  resumo LIKE :termo
+                OR  texto  LIKE  :termo  
+                ORDER BY data DESC";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":termo", "%".$this->getTermo()."%", PDO::PARAM_STR);
             $consulta->execute();
             $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $erro) {
