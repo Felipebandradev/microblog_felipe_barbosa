@@ -254,19 +254,45 @@ final class Noticia
 
     // noticia.php
 
-    public function listarDetalhes() : array{
+    public function listarDetalhes(): array
+    {
         $sql = "SELECT 
                      noticias.titulo, noticias.texto, noticias.id,
                      noticias.data, noticias.imagem,usuarios.nome AS autor
                 FROM noticias INNER JOIN usuarios
                 ON noticias.usuario_id = usuarios.id
                 WHERE noticias.id = :id";
-        
+
         try {
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":id", $this->getId(), PDO::PARAM_INT);
             $consulta->execute();
             $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao carregar dados da noticia" . $erro->getMessage());
+        }
+
+        return $resultado;
+    }
+
+    // noticias por categoria
+    public function listarPorCategoria(): array
+    {
+        $sql = "SELECT 
+                    noticias.titulo, noticias.resumo, noticias.id,  noticias.data, 
+                    usuarios.nome AS autor,
+                    categorias.nome AS categoria
+                FROM noticias 
+                    INNER JOIN usuarios ON noticias.usuario_id = usuarios.id 
+                    INNER JOIN categorias ON noticias.categoria_id = categorias.id
+            
+                WHERE noticias.categoria_id = :categoria_id";
+        
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":categoria_id", $this->categoria->getId(), PDO::PARAM_INT);
+            $consulta->execute();
+            $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $erro) {
             die("Erro ao carregar dados da noticia" . $erro->getMessage());
         }
