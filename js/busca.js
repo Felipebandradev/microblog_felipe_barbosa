@@ -6,7 +6,7 @@ const divResultado = document.querySelector('#resultados');
 divResultado.classList.add("visually-hidden");
 
 campoBusca.addEventListener("input", async function(){
-    if( campoBusca.value !== " "){
+    if( campoBusca.value !== ""){
         const resposta = await fetch("resultados.php", {
             method: "POST",
             body: new FormData(formBusca)
