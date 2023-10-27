@@ -287,7 +287,7 @@ final class Noticia
                     INNER JOIN categorias ON noticias.categoria_id = categorias.id
             
                 WHERE noticias.categoria_id = :categoria_id";
-        
+
         try {
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":categoria_id", $this->categoria->getId(), PDO::PARAM_INT);
@@ -300,7 +300,8 @@ final class Noticia
         return $resultado;
     }
 
-    public function busca():array{
+    public function busca(): array
+    {
 
         $sql = "SELECT id, titulo, data, resumo FROM noticias
                 WHERE
@@ -311,7 +312,7 @@ final class Noticia
 
         try {
             $consulta = $this->conexao->prepare($sql);
-            $consulta->bindValue(":termo", "%".$this->getTermo()."%", PDO::PARAM_STR);
+            $consulta->bindValue(":termo", "%" . $this->getTermo() . "%", PDO::PARAM_STR);
             $consulta->execute();
             $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $erro) {
