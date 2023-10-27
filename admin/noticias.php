@@ -48,7 +48,7 @@ $qtdDeNoticias = count($listaDeNoticias);
 						<tr>
 
 							<td> <?= $itemNoticia['titulo'] ?> </td>
-							<td> <?= $itemNoticia['data'] ?></td>
+							<td> <?= Utilitarios::formataData($itemNoticia['data']) ?></td>
 							<?php if ($_SESSION['tipo'] === 'admin') { ?>
 								<td> <?= $itemNoticia['autor'] ?> </td>
 							<?php } ?>
