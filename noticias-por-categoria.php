@@ -1,4 +1,7 @@
 <?php
+
+use Microblog\Utilitarios;
+
 require_once "inc/cabecalho.php";
 $noticia->categoria->setId($_GET['id']);
 // $categoria = $noticia->categoria->listarUm();
@@ -28,7 +31,7 @@ $listaPorCategoria =  $noticia->listarPorCategoria();
                     <?php foreach ($listaPorCategoria as $itemCategoria) { ?>
                         <a href="noticia.php?id=<?= $itemCategoria['id'] ?>" class="list-group-item list-group-item-action">
                             <h3 class="fs-6"><?= $itemCategoria['titulo'] ?></h3>
-                            <p><time><?= $itemCategoria['data'] ?></time> - <?= $itemCategoria['autor'] ?></p>
+                            <p><time><?= Utilitarios::formataData($itemCategoria['data']) ?></time> - <?= $itemCategoria['autor'] ?></p>
                             <p><?= $itemCategoria['resumo'] ?></p>
                         </a>
                     <?php } ?>
