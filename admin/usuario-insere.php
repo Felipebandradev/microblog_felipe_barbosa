@@ -1,28 +1,26 @@
 <?php 
 require_once "../inc/cabecalho-admin.php";
 use Microblog\Usuario;
-$sessao->verificarAcessoAdmin();
 
+$sessao->verificaAcessoAdmin();
 
-if (isset($_POST['inserir'])){
+if(isset($_POST['inserir'])){
 	$usuario = new Usuario;
 	$usuario->setNome($_POST['nome']);
 	$usuario->setEmail($_POST['email']);
 	$usuario->setTipo($_POST['tipo']);
 
-	/* Primeiro, coficamos a Senha.
-	Depois, pegamos o retorno (já codificado) e repassamos ao setter */
-	$usuario->setSenha($usuario->codificaSenha($_POST['senha']));
-	
+	/* Primeiro, codificamos a senha.
+	Depois, pegamos o retorno (já codificado) e repassamos 
+	ao setter */
+	$usuario->setSenha( $usuario->codificaSenha($_POST["senha"]) );
+
 	$usuario->inserir();
-	header("location:usuarios.php");
-	
-
-
+	header("location:usuarios.php");	
 }
-
 ?>
- 
+
+
 <div class="row">
 	<article class="col-12 bg-white rounded shadow my-1 py-4">
 		

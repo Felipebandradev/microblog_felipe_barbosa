@@ -1,41 +1,40 @@
 <?php 
-require_once "../inc/cabecalho-admin.php";
 use Microblog\Usuario;
+require_once "../inc/cabecalho-admin.php";
+$sessao->verificaAcessoAdmin();
 
-
-
+/* Script para carregamento */
 $usuario = new Usuario;
-
-$usuario->setId($_GET['id']);
-
+$usuario->setId($_GET["id"]);
 $dados = $usuario->listarUm();
 
-
-if (isset($_POST['atualizar'])){
+/* Script para atualização */
+if( isset($_POST["atualizar"]) ){
 	$usuario->setNome($_POST['nome']);
 	$usuario->setEmail($_POST['email']);
 	$usuario->setTipo($_POST['tipo']);
 
 	/* Algoritmo geral para tratamento da senha */
 
-	/* Se o campo senha no formúlario estiver vazio significa que o usuário não mudou a senha */
+	/* Se o campo senha no formulário estiver vazio,
+	significa que o usuário NÃO MUDOU A SENHA. */
+	if( empty($_POST['senha']) ){ 
 
-	if( empty($_POST['senha'])){
+		/* Portanto, simplesmente repassamos a senha já 
+		existente no banco ($dados['senha']) para o objeto
+		através do setSenha, sem qualquer alteração. */
 		$usuario->setSenha($dados['senha']);
 	} else {
-
-	/* Caso o contrário se o usuário digitou alguma coisa no campo preciaremos verificar o que foi digitado  */
-
-		$usuario->setSenha($usuario->verificaSenha($_POST['senha'], $dados['senha']));
-
+		/* Caso contrário, se o usuário digitou alguma coisa
+		no campo, precisaremos verificar o que foi digitado. */
+		$usuario->setSenha( 
+			$usuario->verificaSenha($_POST['senha'], $dados['senha']) 
+		);
 	}
 
 	$usuario->atualizar();
-
 	header("location:usuarios.php");
 }
-
-
 ?>
 
 
@@ -50,12 +49,12 @@ if (isset($_POST['atualizar'])){
 
 			<div class="mb-3">
 				<label class="form-label" for="nome">Nome:</label>
-				<input class="form-control" type="text" id="nome" name="nome" value="<?=$dados['nome']?>" required>
+				<input class="form-control" type="text" id="nome" name="nome" required value="<?=$dados['nome']?>">
 			</div>
 
 			<div class="mb-3">
 				<label class="form-label" for="email">E-mail:</label>
-				<input class="form-control" type="email" id="email" name="email" value="<?=$dados['email']?>" required>
+				<input class="form-control" type="email" id="email" name="email" required value="<?=$dados['email']?>">
 			</div>
 
 			<div class="mb-3">
@@ -67,8 +66,13 @@ if (isset($_POST['atualizar'])){
 				<label class="form-label" for="tipo">Tipo:</label>
 				<select class="form-select" name="tipo" id="tipo" required>
 					<option value=""></option>
-					<option <?php if($dados['tipo'] === "editor"){ echo "selected"; } ?> value="editor">Editor</option>
-					<option  <?php if($dados['tipo'] === "admin"){ echo "selected"; } ?> value="admin">Administrador</option>
+
+					<option <?php if($dados['tipo'] === 'editor') echo " selected "; ?>
+					 value="editor">Editor</option>
+
+					<option <?php if($dados['tipo'] === 'admin') echo " selected "; ?>
+					value="admin">Administrador</option>
+					
 				</select>
 			</div>
 			
